@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoatMart - Marketplace de commandes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1a1e2b;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        header {
+            background: #0f1219;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f4a460;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f4a460;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+        h1 { margin-bottom: 1rem; color: #f4a460; }
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .card {
+            background: #2a2f3f;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #3f4559;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: #f4a460;
+        }
+        .card h3 { color: #f4a460; margin-bottom: 0.5rem; }
+        .card .meta {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin: 0.5rem 0;
+        }
+        .card .stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .btn {
+            display: inline-block;
+            background: #f4a460;
+            color: #1a1e2b;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+        .btn:hover { background: #e59450; }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #0f1219;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-robot"></i>
+            <span>GoatMart</span>
+        </div>
+        <div>Marketplace de commandes</div>
+    </header>
+    <div class="container">
+        <h1><i class="fas fa-crown" style="color: #f4a460;"></i> Commandes populaires</h1>
+        <div class="command-grid">
+            {% for cmd in commands %}
+            <div class="card">
+                <h3>{{ cmd.name }}</h3>
+                <p>{{ cmd.description or "Aucune description" }}</p>
+                <div class="meta">
+                    <i class="fas fa-user"></i> {{ cmd.author }}<br>
+                    <i class="fas fa-tag"></i> ID: {{ cmd.id }} ({{ cmd.short_id }})
+                </div>
+                <div class="stats">
+                    <span><i class="fas fa-eye"></i> {{ cmd.views }}</span>
+                    <span><i class="fas fa-heart" style="color: #ff6b6b;"></i> {{ cmd.likes }}</span>
+                </div>
+                <a href="#" class="btn" onclick="fetchDetails({{ cmd.id }})">Voir détails</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <footer>
+        <p>GoatMart - Toutes les commandes pour votre bot | Développé avec Python/Flask</p>
+    </footer>
+    <script>
+        function fetchDetails(id) {
+            fetch(`/api/item/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    alert(`Nom: ${data.itemName}\nAuteur: ${data.authorName}\nVues: ${data.views}\nLikes: ${data.likes}\nDescription: ${data.description}`);
+                })
+                .catch(err => alert("Erreur lors de la récupération"));
+        }
+    </script>
+</body>
+  </html>
